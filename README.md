@@ -46,6 +46,7 @@ add each of these:
 | Secret name | Value |
 |---|---|
 | `YOUTUBE_CHANNEL_ID` | from step 1 |
+| `YOUTUBE_COOKIES` | see "YouTube cookies" section below |
 | `R2_ACCOUNT_ID` | from step 2 |
 | `R2_ACCESS_KEY_ID` | from step 2 |
 | `R2_SECRET_ACCESS_KEY` | from step 2 |
@@ -62,6 +63,37 @@ Then under the **Variables** tab (same page), add these (not secret, just config
 | `PODCAST_LINK` | Your channel or website URL |
 | `PODCAST_IMAGE_URL` | URL to a square cover image (min 1400x1400px), e.g. hosted in the same R2 bucket |
 | `PODCAST_EMAIL` | An email you control — Spotify sends a verification code here when you import the feed |
+
+### YouTube cookies (needed to avoid "Sign in to confirm you're not a bot")
+
+YouTube increasingly bot-checks requests coming from datacenter IPs — which
+is exactly what GitHub Actions runners are — so downloads will fail without
+this. The fix is to give yt-dlp a copy of your browser's YouTube cookies so
+requests look like they're coming from a logged-in session.
+
+1. In Chrome or Firefox, log into youtube.com with any Google account (a
+   plain viewer account is fine — it doesn't need to own the channel).
+2. Install a "cookies.txt" export extension, e.g.
+   [Get cookies.txt LOCALLY](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc)
+   for Chrome.
+3. While on youtube.com, click the extension and export cookies for
+   `youtube.com`. This downloads a `cookies.txt` file in Netscape format.
+4. Open that file in a text editor, select all, copy it.
+5. In your repo: Settings → Secrets and variables → Actions → New repository
+   secret → name it `YOUTUBE_COOKIES` → paste the entire file contents as
+   the value.
+
+**Notes:**
+- These cookies expire periodically (weeks to months depending on the
+  account). If downloads start failing again with a sign-in error, just
+  re-export and update the secret.
+- Consider using a secondary/throwaway Google account for this rather than
+  your primary one, since the cookies grant that account's browsing session
+  to the automation.
+- This pattern (automated tools using exported session cookies) sits in a
+  gray area of YouTube's Terms of Service around automated access — it's
+  extremely common practice for personal archiving/repurposing of your own
+  content, but worth being aware of.
 
 ### 5. Run it once manually
 Repo → Actions tab → "Sync YouTube audio to podcast feed" → Run workflow.
