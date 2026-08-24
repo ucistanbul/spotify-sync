@@ -52,6 +52,7 @@ PODCAST_EXPLICIT = os.environ.get("PODCAST_EXPLICIT", "no")
 PODCAST_EMAIL = os.environ.get("PODCAST_EMAIL", "")  # required by Spotify to verify ownership
 
 MAX_NEW_VIDEOS_PER_RUN = int(os.environ.get("MAX_NEW_VIDEOS_PER_RUN", "5"))
+YTDLP_COOKIES_FILE = os.environ.get("YTDLP_COOKIES_FILE", "")  # optional path to a cookies.txt
 
 
 def r2_client():
@@ -86,7 +87,7 @@ def fetch_youtube_entries(channel_id):
     return entries
 
 
-def download_audio(video_url, workdir):
+def download_audio(video_url, workdir, cookies_file=None):
     """Use yt-dlp to download best audio and convert to mp3. Returns the mp3 path."""
     out_template = str(workdir / "%(id)s.%(ext)s")
     cmd = [
@@ -94,8 +95,11 @@ def download_audio(video_url, workdir):
         "-x", "--audio-format", "mp3", "--audio-quality", "0",
         "-o", out_template,
         "--no-playlist",
-        video_url,
+        "--js-runtimes", "deno",  # required: YouTube now needs JS execution to unlock formats
     ]
+    if cookies_file:
+        cmd += ["--cookies", cookies_file]
+    cmd.append(video_url)
     subprocess.run(cmd, check=True)
     mp3_files = list(workdir.glob("*.mp3"))
     if not mp3_files:
@@ -167,7 +171,7 @@ def main():
         with tempfile.TemporaryDirectory() as tmp:
             workdir = Path(tmp)
             try:
-                mp3_path = download_audio(video_url, workdir)
+                mp3_path = download_audio(video_url, workdir, cookies_file=YTDLP_COOKIES_FILE or None)
             except subprocess.CalledProcessError as e:
                 print(f"  yt-dlp failed for {video_id}, skipping this run: {e}", file=sys.stderr)
                 continue
