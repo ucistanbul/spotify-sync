@@ -60,6 +60,7 @@ jobs:
           PODCAST_DESCRIPTION: ${{ vars.PODCAST_DESCRIPTION }}
           PODCAST_LINK: ${{ vars.PODCAST_LINK }}
           PODCAST_IMAGE_URL: ${{ vars.PODCAST_IMAGE_URL }}
+          PODCAST_EMAIL: ${{ vars.PODCAST_EMAIL }}
         run: python main.py
 
       - name: Commit updated state.json
