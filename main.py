@@ -49,6 +49,7 @@ PODCAST_LINK = os.environ.get("PODCAST_LINK", f"https://www.youtube.com/channel/
 PODCAST_IMAGE_URL = os.environ.get("PODCAST_IMAGE_URL", "")
 PODCAST_LANGUAGE = os.environ.get("PODCAST_LANGUAGE", "en")
 PODCAST_EXPLICIT = os.environ.get("PODCAST_EXPLICIT", "no")
+PODCAST_EMAIL = os.environ.get("PODCAST_EMAIL", "")  # required by Spotify to verify ownership
 
 MAX_NEW_VIDEOS_PER_RUN = int(os.environ.get("MAX_NEW_VIDEOS_PER_RUN", "5"))
 
@@ -122,6 +123,9 @@ def build_feed(episodes):
     fg.language(PODCAST_LANGUAGE)
     fg.podcast.itunes_author(PODCAST_AUTHOR)
     fg.podcast.itunes_explicit(PODCAST_EXPLICIT)
+    if PODCAST_EMAIL:
+        fg.podcast.itunes_owner(name=PODCAST_AUTHOR, email=PODCAST_EMAIL)
+        fg.managingEditor(f"{PODCAST_EMAIL} ({PODCAST_AUTHOR})")
     if PODCAST_IMAGE_URL:
         fg.image(PODCAST_IMAGE_URL)
         fg.podcast.itunes_image(PODCAST_IMAGE_URL)
