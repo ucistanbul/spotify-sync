@@ -61,6 +61,7 @@ Then under the **Variables** tab (same page), add these (not secret, just config
 | `PODCAST_DESCRIPTION` | A sentence describing the show |
 | `PODCAST_LINK` | Your channel or website URL |
 | `PODCAST_IMAGE_URL` | URL to a square cover image (min 1400x1400px), e.g. hosted in the same R2 bucket |
+| `PODCAST_EMAIL` | An email you control — Spotify sends a verification code here when you import the feed |
 
 ### 5. Run it once manually
 Repo → Actions tab → "Sync YouTube audio to podcast feed" → Run workflow.
