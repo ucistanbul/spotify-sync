@@ -29,8 +29,16 @@ jobs:
         with:
           deno-version: v2.x
 
+      - name: Confirm Deno is on PATH
+        run: deno --version
+
       - name: Write YouTube cookies file
-        run: printf '%s' "${{ secrets.YOUTUBE_COOKIES }}" > /tmp/youtube-cookies.txt
+        env:
+          YOUTUBE_COOKIES: ${{ secrets.YOUTUBE_COOKIES }}
+        run: |
+          printf '%s' "$YOUTUBE_COOKIES" > /tmp/youtube-cookies.txt
+          echo "Cookie file line count: $(wc -l < /tmp/youtube-cookies.txt)"
+          echo "First line: $(head -n1 /tmp/youtube-cookies.txt)"
 
       - name: Install dependencies
         run: pip install -r requirements.txt
