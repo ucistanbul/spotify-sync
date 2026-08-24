@@ -96,6 +96,7 @@ def download_audio(video_url, workdir, cookies_file=None):
         "-o", out_template,
         "--no-playlist",
         "--js-runtimes", "deno",  # required: YouTube now needs JS execution to unlock formats
+        "--remote-components", "ejs:github",  # allow yt-dlp to fetch its JS challenge-solver script
     ]
     if cookies_file:
         cmd += ["--cookies", cookies_file]
