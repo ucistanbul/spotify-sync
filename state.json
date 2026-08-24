@@ -1,3 +1,40 @@
 {
-  "episodes": []
+  "episodes": [
+    {
+      "video_id": "9CIaskDeYts",
+      "title": "UCI Service 26 April 2026",
+      "description": "Acts 8:1-25",
+      "audio_url": "https://pub-b443bd35411a4f0a985da251efd15dd1.r2.dev/episodes/9CIaskDeYts.mp3",
+      "duration_seconds": 6344,
+      "file_size_bytes": 126324621,
+      "published": "2026-04-26T22:02:15+00:00"
+    },
+    {
+      "video_id": "1mWlGnGN0Xk",
+      "title": "UCI Service 03 May 2026",
+      "description": "Judges 1:1-2:5\nWhere Apostasy Grows",
+      "audio_url": "https://pub-b443bd35411a4f0a985da251efd15dd1.r2.dev/episodes/1mWlGnGN0Xk.mp3",
+      "duration_seconds": 5358,
+      "file_size_bytes": 109727109,
+      "published": "2026-05-03T20:31:42+00:00"
+    },
+    {
+      "video_id": "KHpCun2NMWg",
+      "title": "UCI Service 10 May 2026",
+      "description": "Judges 2:6-19\nForgetting God: The Cycle of Sin and Mercy",
+      "audio_url": "https://pub-b443bd35411a4f0a985da251efd15dd1.r2.dev/episodes/KHpCun2NMWg.mp3",
+      "duration_seconds": 4617,
+      "file_size_bytes": 91569261,
+      "published": "2026-05-10T22:04:39+00:00"
+    },
+    {
+      "video_id": "U9FrAQUVluM",
+      "title": "UCI Service 31 May 2026",
+      "description": "Judges 4-5",
+      "audio_url": "https://pub-b443bd35411a4f0a985da251efd15dd1.r2.dev/episodes/U9FrAQUVluM.mp3",
+      "duration_seconds": 5033,
+      "file_size_bytes": 106417869,
+      "published": "2026-05-31T22:13:09+00:00"
+    }
+  ]
 }
