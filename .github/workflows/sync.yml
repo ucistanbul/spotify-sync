@@ -24,6 +24,22 @@ jobs:
       - name: Install ffmpeg
         run: sudo apt-get update && sudo apt-get install -y ffmpeg
 
+      - name: Set up Deno (JS runtime yt-dlp needs for YouTube)
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Confirm Deno is on PATH
+        run: deno --version
+
+      - name: Write YouTube cookies file
+        env:
+          YOUTUBE_COOKIES: ${{ secrets.YOUTUBE_COOKIES }}
+        run: |
+          printf '%s' "$YOUTUBE_COOKIES" > /tmp/youtube-cookies.txt
+          echo "Cookie file line count: $(wc -l < /tmp/youtube-cookies.txt)"
+          echo "First line: $(head -n1 /tmp/youtube-cookies.txt)"
+
       - name: Install dependencies
         run: pip install -r requirements.txt
 
@@ -33,6 +49,7 @@ jobs:
       - name: Run sync script
         env:
           YOUTUBE_CHANNEL_ID: ${{ secrets.YOUTUBE_CHANNEL_ID }}
+          YTDLP_COOKIES_FILE: /tmp/youtube-cookies.txt
           R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
