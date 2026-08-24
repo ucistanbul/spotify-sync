@@ -1,0 +1,5 @@
+yt-dlp>=2024.8.6
+feedparser>=6.0.11
+feedgen>=1.0.0
+boto3>=1.34.0
+mutagen>=1.47.0
