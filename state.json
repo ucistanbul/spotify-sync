@@ -35,6 +35,42 @@
       "duration_seconds": 5033,
       "file_size_bytes": 106417869,
       "published": "2026-05-31T22:13:09+00:00"
+    },
+    {
+      "video_id": "Km_tWIdrVOo",
+      "title": "UCI Service 7 June 2026",
+      "description": "Judges 6-7",
+      "audio_url": "https://pub-b443bd35411a4f0a985da251efd15dd1.r2.dev/episodes/Km_tWIdrVOo.mp3",
+      "duration_seconds": 4678,
+      "file_size_bytes": 97907661,
+      "published": "2026-06-07T19:46:17+00:00"
+    },
+    {
+      "video_id": "tafSmzEPqKs",
+      "title": "UCI Service 7 June 2026",
+      "description": "Judges 6-7",
+      "audio_url": "https://pub-b443bd35411a4f0a985da251efd15dd1.r2.dev/episodes/tafSmzEPqKs.mp3",
+      "duration_seconds": 5328,
+      "file_size_bytes": 112463469,
+      "published": "2026-06-07T22:12:58+00:00"
+    },
+    {
+      "video_id": "QPVmRNfG6CQ",
+      "title": "UCI Service 14 June 2026",
+      "description": "Judges 8",
+      "audio_url": "https://pub-b443bd35411a4f0a985da251efd15dd1.r2.dev/episodes/QPVmRNfG6CQ.mp3",
+      "duration_seconds": 5218,
+      "file_size_bytes": 110197341,
+      "published": "2026-06-14T20:50:39+00:00"
+    },
+    {
+      "video_id": "AE0BRGWOHEg",
+      "title": "UCI Service 21 June 2026",
+      "description": "Judges 9",
+      "audio_url": "https://pub-b443bd35411a4f0a985da251efd15dd1.r2.dev/episodes/AE0BRGWOHEg.mp3",
+      "duration_seconds": 2761,
+      "file_size_bytes": 53386413,
+      "published": "2026-06-21T20:09:45+00:00"
     }
   ]
 }
