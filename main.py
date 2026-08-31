@@ -161,6 +161,7 @@ def main():
     new_entries = new_entries[:MAX_NEW_VIDEOS_PER_RUN]
 
     client = r2_client()
+    succeeded = 0
 
     for entry in new_entries:
         video_id = entry.yt_videoid
@@ -198,8 +199,9 @@ def main():
             "file_size_bytes": file_size_bytes,
             "published": published.isoformat(),
         })
+        succeeded += 1
 
-    if new_entries:
+    if succeeded:
         fg = build_feed(state["episodes"])
         feed_path = Path(tempfile.gettempdir()) / "feed.xml"
         fg.rss_file(str(feed_path))
@@ -207,7 +209,15 @@ def main():
         print(f"Feed updated: {feed_url}")
 
         save_state(state)
-        print(f"Done. {len(new_entries)} new episode(s) added.")
+        print(f"Done. {succeeded} new episode(s) added.")
+        if succeeded < len(new_entries):
+            failed = len(new_entries) - succeeded
+            print(f"WARNING: {failed} video(s) attempted this run but failed to download. "
+                  f"Check the log above for errors — they will be retried next run.", file=sys.stderr)
+    elif new_entries:
+        print(f"ERROR: All {len(new_entries)} video(s) attempted this run failed to download. "
+              f"Nothing was added. Check the log above for errors.", file=sys.stderr)
+        sys.exit(1)
     else:
         print("Nothing to do.")
 
