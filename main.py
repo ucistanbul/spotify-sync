@@ -41,6 +41,7 @@ R2_ACCESS_KEY_ID = os.environ["R2_ACCESS_KEY_ID"]
 R2_SECRET_ACCESS_KEY = os.environ["R2_SECRET_ACCESS_KEY"]
 R2_BUCKET = os.environ["R2_BUCKET"]
 R2_PUBLIC_BASE_URL = os.environ["R2_PUBLIC_BASE_URL"].rstrip("/")  # e.g. https://pub-xxxx.r2.dev
+R2_STATE_BUCKET = os.environ.get("R2_STATE_BUCKET", "")  # PRIVATE bucket, no public access — for cookie jar persistence
 
 PODCAST_TITLE = os.environ.get("PODCAST_TITLE", "My Podcast")
 PODCAST_AUTHOR = os.environ.get("PODCAST_AUTHOR", "Unknown")
@@ -53,6 +54,32 @@ PODCAST_EMAIL = os.environ.get("PODCAST_EMAIL", "")  # required by Spotify to ve
 
 MAX_NEW_VIDEOS_PER_RUN = int(os.environ.get("MAX_NEW_VIDEOS_PER_RUN", "5"))
 YTDLP_COOKIES_FILE = os.environ.get("YTDLP_COOKIES_FILE", "")  # optional path to a cookies.txt
+COOKIE_JAR_KEY = "youtube-cookies.txt"  # object key in the private state bucket
+
+
+def fetch_persisted_cookie_jar(client, local_path):
+    """Pull the last-refreshed cookie jar from the private state bucket, if one
+    exists, overwriting the seed file written from the GitHub secret. Returns
+    True if a persisted jar was found and used."""
+    if not R2_STATE_BUCKET:
+        return False
+    try:
+        client.download_file(R2_STATE_BUCKET, COOKIE_JAR_KEY, str(local_path))
+        return True
+    except Exception:
+        return False  # no persisted jar yet (first run) — fall back to the seed file
+
+
+def persist_cookie_jar(client, local_path):
+    """Save the (possibly yt-dlp-refreshed) cookie jar back to the private state
+    bucket so the next run starts from the freshest version instead of the
+    static seed. Never uploaded with public-read — this bucket must stay private."""
+    if not R2_STATE_BUCKET or not Path(local_path).exists():
+        return
+    try:
+        client.upload_file(str(local_path), R2_STATE_BUCKET, COOKIE_JAR_KEY)
+    except Exception as e:
+        print(f"Warning: could not persist cookie jar for next run: {e}", file=sys.stderr)
 
 
 def r2_client():
@@ -161,6 +188,13 @@ def main():
     new_entries = new_entries[:MAX_NEW_VIDEOS_PER_RUN]
 
     client = r2_client()
+
+    if YTDLP_COOKIES_FILE:
+        if fetch_persisted_cookie_jar(client, YTDLP_COOKIES_FILE):
+            print("Using auto-refreshed cookie jar persisted from a previous run.")
+        else:
+            print("No persisted cookie jar yet — using the seed cookies from YOUTUBE_COOKIES.")
+
     succeeded = 0
 
     for entry in new_entries:
@@ -214,12 +248,20 @@ def main():
             failed = len(new_entries) - succeeded
             print(f"WARNING: {failed} video(s) attempted this run but failed to download. "
                   f"Check the log above for errors — they will be retried next run.", file=sys.stderr)
+        exit_code = 0
     elif new_entries:
         print(f"ERROR: All {len(new_entries)} video(s) attempted this run failed to download. "
               f"Nothing was added. Check the log above for errors.", file=sys.stderr)
-        sys.exit(1)
+        exit_code = 1
     else:
         print("Nothing to do.")
+        exit_code = 0
+
+    if YTDLP_COOKIES_FILE:
+        persist_cookie_jar(client, YTDLP_COOKIES_FILE)
+
+    if exit_code:
+        sys.exit(exit_code)
 
 
 if __name__ == "__main__":
